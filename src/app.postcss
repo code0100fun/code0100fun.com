@@ -1,0 +1,16 @@
+/* Write your global styles here, in PostCSS syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  @apply h-full overflow-hidden;
+  margin: 0;
+  padding: 0;
+}
+
+:root [data-theme='vintage'] {
+  --theme-font-family-base: 'Fira Code', Monaco, Consolas, Ubuntu Mono, monospace;
+  --theme-font-family-heading: 'Fira Code', Monaco, Consolas, Ubuntu Mono, monospace;
+}
