@@ -1,23 +1,25 @@
+<script lang="ts">
+  import { formatDate } from '$lib/utils/date'
+  export let data
+</script>
+
 <section>
   <ul class="grid">
-    <li class="post">
-      <a href="/" class="text-xl text-primary-600">Second Post</a>
-      <p class="text-primary-900">Apr 16, 2023</p>
-      <ul>
-        <li><a href="/" class="text-sm text-secondary-800">#sveltekit</a></li>
-      </ul>
-      <p class="description">Second post of the week 🎉</p>
-      <a href="/" class="link">Read more</a>
-    </li>
-    <li class="post">
-      <a href="/" class="text-xl text-primary-600">First Post</a>
-      <p class="text-primary-900">Apr 14, 2023</p>
-      <ul>
-        <li><a href="/" class="text-sm text-secondary-800">#eBPF</a></li>
-      </ul>
-      <p class="description">Hello World 👋</p>
-      <a href="/" class="link">Read more</a>
-    </li>
+    {#each data.posts as post}
+      <li class="post">
+        <a href="/posts/{post.slug}" class="text-xl text-primary-600">{post.title}</a>
+        <p class="text-primary-900">{formatDate(post.date)}</p>
+        <ul class="flex flex-row gap-2">
+          {#each post.categories as category}
+            <li>
+              <a href="/categories/{category}" class="text-sm text-secondary-800">#{category}</a>
+            </li>
+          {/each}
+        </ul>
+        <p class="description">{post.description}</p>
+        <a href="/posts/{post.slug}" class="link">Read more</a>
+      </li>
+    {/each}
   </ul>
 </section>
 

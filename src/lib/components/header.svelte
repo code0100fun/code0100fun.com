@@ -1,7 +1,7 @@
 <header class="flex flex-col">
   <div class="flex header_logo">
     <div class="flex flex-row w-full bg-secondary-600">
-      <div class="text-on-primary-token bg-primary-600 px-3">code0100fun.com</div>
+      <a class="text-on-primary-token bg-primary-600 px-3" href="/">code0100fun.com</a>
       <div class="arrow-right" />
       <div class="flex-1" />
       <div class="arrow-left" />
