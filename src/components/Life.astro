@@ -1,0 +1,145 @@
+---
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<life-playground class:list={['life-widget', { compact }]}>
+  <div class="life-heading">
+    <span>
+      <span class="tiny-square"></span> conway.life
+    </span>
+    <span class="life-live">INTERACTIVE</span>
+  </div>
+  <div
+    class="life-board"
+    aria-label="Conway’s Game of Life, toggle cells with a click or the keyboard"
+    role="group"
+  ></div>
+  <div class="life-controls">
+    <span>
+      gen <output class="life-generation">000</output>
+    </span>
+    <div>
+      <button class="life-reset" type="button" aria-label="Reset Game of Life">
+        ↺ Reset
+      </button>
+      <button class="life-toggle" type="button" aria-label="Run Game of Life">
+        ▶ Run
+      </button>
+    </div>
+  </div>
+  <noscript>
+    <p>Enable JavaScript to run the interactive simulation.</p>
+  </noscript>
+</life-playground>
+<script>
+  import { stepLife } from '../lib/life.mjs';
+  class LifePlayground extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready) return;
+      this.dataset.ready = 'true';
+      const width = 24,
+        height = 12;
+      const board = this.querySelector<HTMLDivElement>('.life-board')!;
+      const output = this.querySelector<HTMLOutputElement>('.life-generation')!;
+      const toggle = this.querySelector<HTMLButtonElement>('.life-toggle')!;
+      let cells = new Uint8Array(width * height);
+      let generation = 0;
+      let interval: ReturnType<typeof setInterval> | undefined;
+      let cursor = 0;
+      const buttons: HTMLButtonElement[] = [];
+      const paint = () => {
+        buttons.forEach((button, i) => {
+          button.classList.toggle('alive', cells[i] === 1);
+          button.setAttribute('aria-pressed', String(cells[i] === 1));
+        });
+        output.value = String(generation).padStart(3, '0');
+      };
+      const stop = () => {
+        clearInterval(interval);
+        interval = undefined;
+        toggle.textContent = '▶ Run';
+        toggle.setAttribute('aria-label', 'Run Game of Life');
+      };
+      const reset = () => {
+        stop();
+        cells = new Uint8Array(width * height);
+        generation = 0;
+        const seed = [
+          '00100000100',
+          '00010001000',
+          '00111111100',
+          '01101110110',
+          '11111111111',
+          '10111111101',
+          '10100000101',
+          '00011011000',
+        ];
+        seed.forEach((row, y) =>
+          [...row].forEach((cell, x) => {
+            cells[(y + 2) * width + x + 6] = Number(cell);
+          }),
+        );
+        paint();
+      };
+      for (let i = 0; i < cells.length; i++) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.tabIndex = i === 0 ? 0 : -1;
+        button.setAttribute(
+          'aria-label',
+          `Cell ${Math.floor(i / width) + 1}, ${(i % width) + 1}`,
+        );
+        button.addEventListener('click', () => {
+          cells[i] = cells[i] ? 0 : 1;
+          paint();
+        });
+        button.addEventListener('focus', () => {
+          buttons[cursor].tabIndex = -1;
+          cursor = i;
+          button.tabIndex = 0;
+        });
+        button.addEventListener('keydown', (event) => {
+          const offsets: Record<string, number> = {
+            ArrowLeft: -1,
+            ArrowRight: 1,
+            ArrowUp: -width,
+            ArrowDown: width,
+          };
+          if (event.key in offsets) {
+            event.preventDefault();
+            buttons[
+              (i + offsets[event.key] + cells.length) % cells.length
+            ].focus();
+          }
+        });
+        buttons.push(button);
+        board.append(button);
+      }
+      toggle.addEventListener('click', () => {
+        if (interval) {
+          stop();
+          return;
+        }
+        toggle.textContent = 'Ⅱ Pause';
+        toggle.setAttribute('aria-label', 'Pause Game of Life');
+        interval = setInterval(() => {
+          cells = stepLife(cells, width, height);
+          generation++;
+          paint();
+        }, 180);
+      });
+      this.querySelector('.life-reset')!.addEventListener('click', reset);
+      this.cleanup = stop;
+      reset();
+    }
+    cleanup?: () => void;
+    disconnectedCallback() {
+      this.cleanup?.();
+    }
+  }
+  if (!customElements.get('life-playground'))
+    customElements.define('life-playground', LifePlayground);
+</script>

@@ -1,0 +1,85 @@
+---
+title: 'A tiny universe, built one cell at a time'
+description: 'No physics engine. No complicated rules. Just a grid, a few neighbors, and surprisingly lifelike behavior.'
+date: 2026-09-15
+tags: [JavaScript, Game dev]
+featured: true
+example: true
+art: cells
+---
+
+import Life from '../../components/Life.astro';
+
+Simple rules can produce wonderfully complicated results. Conway’s Game of Life starts with a grid of cells. Each cell is either alive or dead, and every generation is computed from the last one.
+
+There is no score to chase. No enemy AI. Just a tiny world that keeps surprising you.
+
+## Three rules, one world
+
+Each cell has eight neighbors: horizontally, vertically, and diagonally adjacent cells. To get the next generation:
+
+- A live cell with **two or three** live neighbors survives.
+- A dead cell with **exactly three** live neighbors becomes alive.
+- Every other cell is dead.
+
+That’s the entire simulation. The interesting behavior comes from how those rules interact across the grid.
+
+## Give it a little nudge
+
+Click cells to change the starting pattern, then press **Run**. Use **Pause** to stop time and **Reset** to bring back the little pixel creature. You can also tab into the grid, use the arrow keys to move, and press Space to toggle a cell.
+
+<Life />
+
+The edges wrap around: a cell on the left sees cells on the right as neighbors. Mathematically, the world has the topology of a torus. Visually, it’s still just a rectangle.
+
+## Keep the current and next worlds separate
+
+Here is the update function powering the widget:
+
+```javascript
+function stepLife(cells, width, height) {
+  const next = new Uint8Array(width * height);
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      let neighbors = 0;
+
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (dx === 0 && dy === 0) continue;
+          const nx = (x + dx + width) % width;
+          const ny = (y + dy + height) % height;
+          neighbors += cells[ny * width + nx];
+        }
+      }
+
+      const index = y * width + x;
+      next[index] = Number(
+        neighbors === 3 || (cells[index] === 1 && neighbors === 2),
+      );
+    }
+  }
+
+  return next;
+}
+```
+
+The most important detail is the second buffer. Updating the current grid in place would let some cells see the future while others still see the past. The results would depend on traversal order.
+
+A separate `next` array keeps the generation synchronous. Read the old world, write the new world, then swap them.
+
+## Find a blinker
+
+Three live cells in a horizontal line become three cells in a vertical line. On the next step, they become horizontal again. This two-generation pattern is called a **blinker**.
+
+A two-by-two block does something even simpler: it stays exactly where it is. Each cell has three neighbors, so each survives forever as long as nothing nearby disturbs it.
+
+Try placing those patterns far apart. Then move them closer together. Predicting the interactions quickly becomes much harder than understanding the rules.
+
+## Small systems are worth exploring
+
+You can scale this approach up: pack the cells into bits, update chunks in parallel, or use a GPU. But a plain array and a short loop make a useful starting point because the entire state is easy to inspect.
+
+The same habit helps with game engines, virtual machines, and hardware simulations. First make the rules visible. Then measure what needs to become faster.
+
+There is a lot of room to play inside a very small program.

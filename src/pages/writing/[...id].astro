@@ -1,0 +1,146 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import { publishedPosts, readingTime, formatDate } from '../../lib/posts';
+export async function getStaticPaths() {
+  return (await publishedPosts()).map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+const { post } = Astro.props as { post: CollectionEntry<'posts'> };
+const { Content, headings } = await render(post);
+const toc = headings.filter(
+  (heading) => heading.depth === 2 || heading.depth === 3,
+);
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.date.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: 'Chase McCarthy',
+    url: 'https://github.com/code0100fun',
+  },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  article
+  date={post.data.date}
+>
+  <article class="article-shell">
+    <a class="back-link" href="/#writing">
+      <Icon name="arrow" size={16} />
+      Back to the field notes
+    </a>
+    <header class="article-header">
+      <div class="tags">
+        {post.data.tags.map((tag) => (
+          <a
+            class={`tag tag-${tag.toLowerCase()}`}
+            href={`/?tag=${encodeURIComponent(tag)}#writing`}
+          >
+            {tag}
+          </a>
+        ))}
+      </div>
+      <h1>{post.data.title}</h1>
+      <p class="article-description">{post.data.description}</p>
+      <div class="article-meta">
+        <span>code0100fun</span>
+        <span>·</span>
+        <time datetime={post.data.date.toISOString()}>
+          {formatDate(post.data.date)}
+        </time>
+        <span>·</span>
+        <span>{readingTime(post)} min read</span>
+      </div>
+    </header>
+    {post.data.example && (
+      <aside class="example-notice">
+        Example field note · A sample article to demonstrate this blog’s
+        writing, code, and interactive features.
+      </aside>
+    )}
+    {toc.length > 0 && (
+      <details class="toc">
+        <summary>In this field note</summary>
+        <ul>
+          {toc.map((heading) => (
+            <li class={`depth-${heading.depth}`}>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    )}
+    <div class="prose">
+      <Content />
+    </div>
+    <div class="article-bottom">
+      <p>More experiments. More rabbit holes.</p>
+      <a class="button" href="/rss.xml">
+        Follow along via RSS <Icon name="rss" size={15} />
+      </a>
+      <a
+        class="text-link"
+        href={`https://x.com/intent/post?text=${encodeURIComponent(post.data.title)}&url=${encodeURIComponent(new URL(Astro.url.pathname, Astro.site).href)}`}
+      >
+        Share on X <Icon name="external" size={15} />
+      </a>
+    </div>
+  </article>
+  <script
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify(schema).replace(/</g, '\\u003c')}
+  ></script>
+</Layout>
+<script>
+  document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block';
+    pre.before(wrapper);
+    wrapper.append(pre);
+    const toolbar = document.createElement('div');
+    toolbar.className = 'code-toolbar';
+    const label = document.createElement('span');
+    label.textContent =
+      pre.dataset.language ??
+      pre.querySelector('code')?.className.replace('language-', '') ??
+      'source';
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'copy-code';
+    button.textContent = 'Copy code';
+    button.setAttribute('aria-label', 'Copy code to clipboard');
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(
+          pre.querySelector('code')?.textContent ?? pre.textContent ?? '',
+        );
+        button.textContent = 'Copied!';
+      } catch {
+        button.textContent = 'Select to copy';
+        const range = document.createRange();
+        range.selectNodeContents(pre);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+      }
+      setTimeout(() => {
+        button.textContent = 'Copy code';
+      }, 1800);
+    });
+    toolbar.append(label, button);
+    wrapper.append(toolbar);
+  });
+</script>

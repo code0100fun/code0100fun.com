@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { projects } from '../data/projects';
+---
+
+<Layout
+  title="Projects"
+  active="Projects"
+  description="Open-source projects by code0100fun. Web apps, hardware, developer tools, and game experiments."
+>
+  <header class="page-intro">
+    <div class="eyebrow">
+      <span class="orange-dash"></span> BUILT OUT OF CURIOSITY
+    </div>
+    <h1>
+      On the workbench<span class="heading-dot">.</span>
+    </h1>
+    <p>
+      A few of the things I’ve been building and exploring. Software, silicon,
+      and the interesting places where they meet.
+    </p>
+  </header>
+  <div class="project-grid project-page-grid">
+    {projects.map((project) => (
+      <a class="project-card" href={project.url}>
+        <div class="project-icon">
+          <Icon name={project.icon} size={25} />
+        </div>
+        <div>
+          <div class="project-category">{project.category}</div>
+          <h3>
+            {project.name} <Icon name="external" size={16} />
+          </h3>
+          <p>{project.description}</p>
+          <span class="project-language">
+            <i class={`dot ${project.language.toLowerCase()}`} />
+            {project.language}
+          </span>
+        </div>
+      </a>
+    ))}
+  </div>
+  <div class="page-links">
+    <a class="button" href="https://github.com/code0100fun">
+      More on GitHub <Icon name="github" size={17} />
+    </a>
+    <a class="button" href="/#writing">
+      Read the field notes <Icon name="arrow" size={17} />
+    </a>
+  </div>
+</Layout>

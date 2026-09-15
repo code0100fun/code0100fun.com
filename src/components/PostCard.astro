@@ -1,0 +1,55 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PostArt from './PostArt.astro';
+import Icon from './Icon.astro';
+import { formatDate, readingTime } from '../lib/posts';
+const { post } = Astro.props as { post: CollectionEntry<'posts'> };
+---
+
+<article
+  class="post-card"
+  data-tags={post.data.tags.join(',').toLowerCase()}
+  data-search={`${post.data.title} ${post.data.description} ${post.data.tags.join(' ')}`.toLowerCase()}
+>
+  <a
+    href={`/writing/${post.id}/`}
+    class="post-art-link"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <PostArt type={post.data.art} />
+  </a>
+  <div class="post-card-body">
+    <div class="post-meta">
+      <time datetime={post.data.date.toISOString()}>
+        {formatDate(post.data.date)}
+      </time>
+      <span>·</span>
+      <span>{readingTime(post)} min read</span>
+      {post.data.example && <span class="example-label">Example</span>}
+    </div>
+    <h3>
+      <a href={`/writing/${post.id}/`}>{post.data.title}</a>
+    </h3>
+    <p>{post.data.description}</p>
+    <div class="card-bottom">
+      <div class="tags">
+        {post.data.tags.slice(0, 2).map((tag) => (
+          <a
+            class={`tag tag-${tag.toLowerCase()}`}
+            href={`/?tag=${encodeURIComponent(tag)}#writing`}
+          >
+            {tag}
+          </a>
+        ))}
+      </div>
+      <a
+        class="card-arrow"
+        href={`/writing/${post.id}/`}
+        aria-label={`Read ${post.data.title}`}
+      >
+        <Icon name="arrow" size={18} />
+      </a>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Layout
+  title="About"
+  active="About"
+  description="Hi, I’m Chase, also known as code0100fun. I write Elixir, Zig, Rust, and C, and build things from web apps to hardware."
+>
+  <header class="page-intro">
+    <div class="eyebrow">
+      <span class="orange-dash"></span> THE HUMAN BEHIND THE HANDLE
+    </div>
+    <h1>
+      Hi, I’m Chase<span class="heading-dot">.</span>
+    </h1>
+    <p>
+      You might know me as{' '}
+      <a
+        class="text-link"
+        style="display:inline;color:var(--orange);font:inherit"
+        href="https://github.com/code0100fun"
+      >
+        code0100fun
+      </a>
+      . I write code and follow my curiosity from the browser all the way down
+      to the hardware.
+    </p>
+  </header>
+  <div class="about-layout">
+    <div class="about-copy">
+      <h2>Somewhere between software and silicon.</h2>
+      <p>
+        My projects span web apps, microcontrollers, video games, HDL hardware,
+        game engines, a programming language, and an Erlang VM. Elixir, Zig,
+        Rust, and C are my usual tools.
+      </p>
+      <p>
+        This is a place to write about those projects: the small discoveries,
+        the implementation details, and the rabbit holes along the way. Expect
+        plenty of source code and the occasional thing you can play with.
+      </p>
+      <h2>Build it. Understand it. Write it down.</h2>
+      <p>
+        A finished project is only part of the story. The interesting bits are
+        often the choices made along the way, and what happens when an idea
+        meets a real machine.
+      </p>
+      <div class="page-links">
+        <a class="button" href="https://github.com/code0100fun">
+          <Icon name="github" size={17} />
+          GitHub
+        </a>
+        <a class="button" href="https://x.com/code0100fun">
+          <Icon name="x" size={15} />
+          @code0100fun
+        </a>
+      </div>
+    </div>
+    <aside class="about-stack">
+      <h2>The usual suspects</h2>
+      {[
+        ['Elixir', 'Processes & the BEAM'],
+        ['Zig', 'Systems & tooling'],
+        ['Rust', 'Safety & performance'],
+        ['C', 'Close to the metal'],
+      ].map(([name, detail]) => (
+        <div class="stack-row">
+          <span>
+            <i class={`dot ${name.toLowerCase()}`} />
+            {name}
+          </span>
+          <span>{detail}</span>
+        </div>
+      ))}
+      <div class="stack-row">
+        <span>+ curiosity</span>
+        <span>The common dependency</span>
+      </div>
+    </aside>
+  </div>
+</Layout>

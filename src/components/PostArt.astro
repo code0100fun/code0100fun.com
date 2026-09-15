@@ -1,0 +1,93 @@
+---
+interface Props {
+  type?: string;
+  large?: boolean;
+}
+const { type = 'terminal', large = false } = Astro.props;
+---
+
+<div class:list={['post-art', `art-${type}`, { large }]} aria-hidden="true">
+  {type === 'cells' ? (
+    <>
+      <div class="cell-art-grid">
+        {Array.from({ length: 180 }, (_, i) => (
+          <i
+            class:list={{
+              lit: [
+                23, 24, 25, 37, 38, 40, 41, 52, 53, 54, 55, 56, 67, 68, 70, 71,
+                83, 85, 97, 98, 100, 101, 117, 118, 119, 132, 134, 147, 148,
+                149,
+              ].includes(i),
+            }}
+          />
+        ))}
+      </div>
+      <span class="art-label">a little order. a little chaos.</span>
+    </>
+  ) : type === 'memory' ? (
+    <>
+      <span class="diagram-caption">
+        one allocation. endless possibilities.
+      </span>
+      <div class="memory-diagram">
+        <div>
+          <span>0x00</span>
+          <span>0x10</span>
+          <span>0x20</span>
+          <span>0x30</span>
+        </div>
+        <section>
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+        </section>
+        <p>
+          <span>← allocated →</span>
+          <span>free space</span>
+        </p>
+      </div>
+      <span class="art-label">arena.alloc(size)</span>
+    </>
+  ) : type === 'beam' ? (
+    <>
+      <div class="beam-diagram">
+        <span>PID &lt;0.1&gt;</span>
+        <b>
+          ↗<br />→<br />↘
+        </b>
+        <div>
+          <span>PID &lt;0.2&gt;</span>
+          <span>PID &lt;0.3&gt;</span>
+          <span>PID &lt;0.4&gt;</span>
+        </div>
+      </div>
+      <span class="art-label">send(pid, :hello)</span>
+    </>
+  ) : type === 'bits' ? (
+    <>
+      <div class="bits-diagram">
+        {['0', '1', '0', '0', '1', '0', '1', '0'].map((bit) => (
+          <span class:list={{ on: bit === '1' }}>{bit}</span>
+        ))}
+      </div>
+      <span class="art-label">small bits. big possibilities.</span>
+    </>
+  ) : (
+    <>
+      <div class="terminal-art">
+        <span>~/workbench</span>
+        <p>
+          <b>❯</b> make something_fun
+        </p>
+        <p class="terminal-success">
+          compiled with curiosity.<i>▌</i>
+        </p>
+      </div>
+    </>
+  )}
+</div>

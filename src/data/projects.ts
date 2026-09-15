@@ -1,0 +1,51 @@
+export const projects = [
+  {
+    name: 'rust-hackrf',
+    description:
+      'A Rust wrapper for libhackrf. A little closer to the radio waves.',
+    language: 'Rust',
+    category: 'Software-defined radio',
+    icon: 'radio',
+    url: 'https://github.com/code0100fun/rust-hackrf',
+  },
+  {
+    name: 'zig-verilator',
+    description: 'Where Zig meets hardware simulation.',
+    language: 'Zig',
+    category: 'Hardware & tooling',
+    icon: 'chip',
+    url: 'https://github.com/code0100fun/zig-verilator',
+  },
+  {
+    name: 'gb-gowin',
+    description: 'An exploration in SystemVerilog and FPGA hardware.',
+    language: 'SystemVerilog',
+    category: 'HDL & hardware',
+    icon: 'gamepad',
+    url: 'https://github.com/code0100fun/gb-gowin',
+  },
+  {
+    name: 'hbars',
+    description: 'Haml-like syntax for Ember HTMLBars templates.',
+    language: 'JavaScript',
+    category: 'Languages & web',
+    icon: 'code',
+    url: 'https://github.com/code0100fun/hbars',
+  },
+  {
+    name: 'pcb',
+    description: 'A web-based PCB design service.',
+    language: 'CoffeeScript',
+    category: 'Web & electronics',
+    icon: 'chip',
+    url: 'https://github.com/code0100fun/pcb',
+  },
+  {
+    name: 'VoxelWorld',
+    description: 'A voxel world generator for Unreal Engine 4.',
+    language: 'Unreal Engine',
+    category: 'Games & engines',
+    icon: 'box',
+    url: 'https://github.com/code0100fun/VoxelWorld',
+  },
+];
