@@ -1650,3 +1650,32 @@ svg {
     animation: none !important;
   }
 }
+
+.upcoming-intro {
+  color: var(--muted);
+  margin: -6px 0 24px;
+  max-width: 650px;
+}
+.project-details {
+  min-width: 0;
+}
+.project-details h3 {
+  overflow-wrap: anywhere;
+}
+.project-status {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 4px 9px;
+  border: 1px solid #60422e;
+  border-radius: 4px;
+  color: #ffad79;
+  background: #28221e;
+  font: 12px var(--mono);
+}
+.project-coming-soon {
+  border-style: dashed;
+}
+.project-coming-soon:hover {
+  background: #151618;
+  border-color: var(--line);
+}

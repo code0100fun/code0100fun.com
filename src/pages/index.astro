@@ -5,7 +5,7 @@ import Life from '../components/Life.astro';
 import PostArt from '../components/PostArt.astro';
 import PostCard from '../components/PostCard.astro';
 import { publishedPosts, readingTime, formatDate } from '../lib/posts';
-import { projects } from '../data/projects';
+import { publicProjects as projects } from '../data/projects';
 const posts = await publishedPosts();
 const featured = posts.find((post) => post.data.featured) ?? posts[0];
 const others = posts.filter((post) => post.id !== featured?.id);

@@ -1,16 +1,60 @@
-export const projects = [
+interface ProjectBase {
+  name: string;
+  url: string;
+  icon: string;
+}
+export interface PublicProject extends ProjectBase {
+  status: 'public';
+  description: string;
+  language: string;
+  category: string;
+}
+export interface UpcomingProject extends ProjectBase {
+  status: 'coming-soon';
+  description?: string;
+  language?: string;
+  category?: string;
+}
+export type Project = PublicProject | UpcomingProject;
+
+// Change status to public and supply metadata when a repository opens.
+// Coming-soon URLs are kept here but never rendered as links.
+export const projects: Project[] = [
   {
-    name: 'rust-hackrf',
+    name: 'bees',
+    status: 'public',
     description:
-      'A Rust wrapper for libhackrf. A little closer to the radio waves.',
-    language: 'Rust',
-    category: 'Software-defined radio',
-    icon: 'radio',
-    url: 'https://github.com/code0100fun/rust-hackrf',
+      'A lightweight, SQLite-backed issue tracker that lives in your project directory. One binary, local-first.',
+    language: 'Zig',
+    category: 'Developer tools',
+    icon: 'terminal',
+    url: 'https://github.com/ctxshift/bees',
+  },
+  {
+    name: 'clinex',
+    status: 'public',
+    description:
+      'Terminal interfaces over SSH for Phoenix applications, with LiveView-style callbacks and declarative templates.',
+    language: 'Elixir',
+    category: 'Terminal interfaces',
+    icon: 'terminal',
+    url: 'https://github.com/ctxshift/clinex',
+  },
+  {
+    name: 'video-feed',
+    status: 'public',
+    description:
+      'Video transcripts from local Whisper, corrected against on-screen text with a Gemini vision pass.',
+    language: 'TypeScript',
+    category: 'Video & transcription',
+    icon: 'code',
+    url: 'https://github.com/ctxshift/video-feed',
   },
   {
     name: 'zig-verilator',
-    description: 'Where Zig meets hardware simulation.',
+    status: 'public',
+    description:
+      'Typed Zig bindings for SystemVerilog modules. Build hardware simulations and write testbenches in Zig.',
     language: 'Zig',
     category: 'Hardware & tooling',
     icon: 'chip',
@@ -18,34 +62,48 @@ export const projects = [
   },
   {
     name: 'gb-gowin',
-    description: 'An exploration in SystemVerilog and FPGA hardware.',
+    status: 'public',
+    description:
+      'A Game Boy DMG implementation in SystemVerilog for the Tang Nano 20K FPGA. A work in progress.',
     language: 'SystemVerilog',
     category: 'HDL & hardware',
     icon: 'gamepad',
     url: 'https://github.com/code0100fun/gb-gowin',
   },
   {
-    name: 'hbars',
-    description: 'Haml-like syntax for Ember HTMLBars templates.',
-    language: 'JavaScript',
-    category: 'Languages & web',
+    name: 'zeo',
+    status: 'coming-soon',
     icon: 'code',
-    url: 'https://github.com/code0100fun/hbars',
+    url: 'https://github.com/ctxshift/zeo',
   },
   {
-    name: 'pcb',
-    description: 'A web-based PCB design service.',
-    language: 'CoffeeScript',
-    category: 'Web & electronics',
-    icon: 'chip',
-    url: 'https://github.com/code0100fun/pcb',
+    name: 'phx_mobile',
+    status: 'coming-soon',
+    icon: 'code',
+    url: 'https://github.com/ctxshift/phx_mobile',
   },
   {
-    name: 'VoxelWorld',
-    description: 'A voxel world generator for Unreal Engine 4.',
-    language: 'Unreal Engine',
-    category: 'Games & engines',
-    icon: 'box',
-    url: 'https://github.com/code0100fun/VoxelWorld',
+    name: 'nvrhi-zig',
+    status: 'coming-soon',
+    icon: 'code',
+    url: 'https://github.com/ctxshift/nvrhi-zig',
+  },
+  {
+    name: 'firefly',
+    status: 'coming-soon',
+    icon: 'code',
+    url: 'https://github.com/code0100fun/firefly',
+  },
+  {
+    name: 'typhon',
+    status: 'coming-soon',
+    icon: 'code',
+    url: 'https://github.com/code0100fun/typhon',
   },
 ];
+export const publicProjects = projects.filter(
+  (project): project is PublicProject => project.status === 'public',
+);
+export const upcomingProjects = projects.filter(
+  (project): project is UpcomingProject => project.status === 'coming-soon',
+);

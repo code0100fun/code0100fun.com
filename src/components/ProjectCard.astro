@@ -1,0 +1,35 @@
+---
+import Icon from './Icon.astro';
+import type { Project } from '../data/projects';
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+const isPublic = project.status === 'public';
+const Tag = isPublic ? 'a' : 'article';
+const owner = new URL(project.url).pathname.split('/')[1];
+---
+
+<Tag
+  class:list={['project-card', { 'project-coming-soon': !isPublic }]}
+  href={isPublic ? project.url : undefined}
+>
+  <div class="project-icon">
+    <Icon name={project.icon} size={25} />
+  </div>
+  <div class="project-details">
+    <div class="project-category">{project.category ?? owner}</div>
+    <h3>
+      {project.name}
+      {isPublic && <Icon name="external" size={16} />}
+    </h3>
+    {project.description && <p>{project.description}</p>}
+    {project.language && (
+      <span class="project-language">
+        <i class={`dot ${project.language.toLowerCase()}`} />
+        {project.language}
+      </span>
+    )}
+    {!isPublic && <span class="project-status">Private · Coming soon</span>}
+  </div>
+</Tag>

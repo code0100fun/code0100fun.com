@@ -93,6 +93,12 @@ docker run --rm -p 8080:8080 code0100fun-blog
 
 Verify `/`, an article, `/healthz`, and a nonexistent path (which should return HTTP 404 with the custom error page).
 
+## Project visibility
+
+Edit `src/data/projects.ts` to manage the project list. Projects with `status: 'public'` appear as GitHub links; the first three also appear on the homepage. Projects with `status: 'coming-soon'` appear in a separate section as non-clickable cards labeled **Private · Coming soon**. Their repository URLs are not rendered as links. Descriptions, languages, and categories are optional for coming-soon projects.
+
+When a repository becomes public, change its status to `public`, supply its description, language, and category, then rebuild and deploy. Visibility is curated here rather than detected automatically from GitHub.
+
 ## Where things live
 
 | File or directory                      | Purpose                                      |
