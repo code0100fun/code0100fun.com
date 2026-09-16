@@ -1,4 +1,4 @@
-# Fly app names are globally unique. Choose yours with `fly launch --no-deploy`.
+# Production app in the Fly.io Personal organization.
 app = "code0100fun-blog"
 primary_region = "dfw"
 

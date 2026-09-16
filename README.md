@@ -74,11 +74,43 @@ Only add Markdown/MDX from trusted authors: MDX can import and execute code at b
 
 The multi-stage Docker build generates static files with Node 24 and serves them with unprivileged Nginx on port 8080. Fly handles HTTPS. No persistent volume or runtime secrets are needed.
 
-1. Install and sign in to the [Fly CLI](https://fly.io/docs/flyctl/install/).
-2. From this directory, run `fly launch --no-deploy`. Keep the supplied Dockerfile and select a unique Fly app name; `code0100fun-blog` in `fly.toml` is a suggested name, not a provisioned app.
-3. Review `fly.toml`, then run `fly deploy`.
-4. Run `fly status` and `fly checks list` to verify the running app and `/healthz` check.
-5. Add the domain with `fly certs add code0100fun.com`. Use `fly certs show code0100fun.com` to obtain the required DNS records. Apply the records at your DNS provider, then verify the certificate status.
+The app is deployed as **`code0100fun-blog`** in the **Personal** organization (`personal`), with one shared-CPU, 256 MB machine in Dallas (`dfw`). Its Fly URL is [code0100fun-blog.fly.dev](https://code0100fun-blog.fly.dev).
+
+The project pins Fly CLI in `.mise.toml`. To deploy an update:
+
+```sh
+mise install
+mise exec -- flyctl auth login
+npm run check
+npm run build
+npm test
+mise exec -- flyctl deploy --remote-only --ha=false
+mise exec -- flyctl status
+mise exec -- flyctl checks list
+```
+
+Remote builds do not require a local Docker daemon. Login is only needed when the CLI is not authenticated.
+
+### Custom domain setup
+
+The DNS cutover from Vercel to Fly.io was applied through the Namecheap API on September 15, 2026. Fly-managed Let's Encrypt certificates are active for `code0100fun.com` and `www.code0100fun.com`. Namecheap remains the DNS provider. The web records are:
+
+| Type | Host | Value |
+| ---- | ---- | ----- |
+| A | `@` | `66.241.124.36` |
+| AAAA | `@` | `2a09:8280:1::18f:b3bf:0` |
+| CNAME | `www` | `o901xoe.code0100fun-blog.fly.dev` |
+
+Keep the following records for domain validation and certificate renewal:
+
+| Type | Host | Value |
+| ---- | ---- | ----- |
+| CNAME | `_acme-challenge` | `code0100fun.com.o901xoe.flydns.net.` |
+| CNAME | `_acme-challenge.www` | `www.code0100fun.com.o901xoe.flydns.net.` |
+| TXT | `_fly-ownership` | `app-o901xoe` |
+| TXT | `_fly-ownership.www` | `app-o901xoe` |
+
+The existing apex TXT record and Google mail configuration (`EmailType=GMAIL`) were preserved. Namecheap's `setHosts` API replaces the complete host-record list, so always read and back up the zone first and preserve its email mode. Use `mise exec -- flyctl certs check code0100fun.com` (and the `www` hostname) to verify HTTPS status.
 
 The canonical URL is **https://code0100fun.com**. Change `site` in `astro.config.mjs` if you intend to use a different domain, then rebuild and redeploy. The canonical URLs, RSS, sitemap, and article sharing links follow that setting.
 
